@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\camera.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\renderer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\scene.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\sprite.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\gameobject.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\text.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\game.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\input.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\resourcemanager.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\camera.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\renderer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\scene.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\sprite.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\gameobject.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\text.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\game.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\input.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\common\resourcemanager.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\genix\Documents\GitHub\Snow\snowgame\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{FB816E68-DADD-37E8-B519-ADFACA86F1AB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

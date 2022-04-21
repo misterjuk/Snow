@@ -1,0 +1,10 @@
+^C:\USERS\GENIX\DOCUMENTS\GITHUB\SNOW\SNOWGAME\SRC\EXTERNAL\GLFW-3.3\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/genix/Documents/GitHub/Snow/snowgame/src -BC:/Users/genix/Documents/GitHub/Snow/snowgame/build --check-stamp-file C:/Users/genix/Documents/GitHub/Snow/snowgame/build/external/glfw-3.3/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

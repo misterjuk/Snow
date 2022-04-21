@@ -1,0 +1,7 @@
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/CMakeFiles/common.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/CMakeFiles/demo.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/external/CMakeFiles/GLEW_190.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/external/glfw-3.3/CMakeFiles/ALL_BUILD.dir
+C:/Users/genix/Documents/GitHub/Snow/snowgame/build/external/glfw-3.3/src/CMakeFiles/glfw.dir
