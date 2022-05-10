@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * 
+ */
 #ifndef MYSCENE_H
 #define MYSCENE_H
 #include <common/scene.h>
@@ -8,22 +14,18 @@
 class MyScene : public Scene
 {
 public:
-     MyScene(/* args */);
-  virtual void init();
-   virtual ~MyScene();
-   virtual void update(float deltaTime);
-   void InstantiateSnowLayer();
-   bool CheckCollisionWithSnow(GameObject* gameobject);
+  MyScene(/* args */);
+  virtual bool init();
+  virtual ~MyScene();
+  virtual void update(float deltaTime);
 
-   void StartNewGame();
+  Player* player;
+  std::vector<Snowflake*> snowflakes;
+  std::vector<Snow*> snow;
+  std::vector<GameObject*> numbers;
 
-   Player* player;
-   std::vector<Snowflake*> snowflakes;
-   std::vector<Snow*> snow;
+  unsigned int Score = 0;
 
-   unsigned int Score = 0;
-
-   bool GameOver = false;
 private:
   unsigned int snowlayercount = 0;
   unsigned int maxsnowlayer = 3; //snow layers to lose
@@ -31,6 +33,14 @@ private:
 	float timeLeftToSpawn;
   glm::vec3 snowflakeVelocity; //make it just a float?
   Collider* _collider;
+
+  bool isInitialized = false;
+
+  void clear();
+  void resetGame();
+  void updateScore(int score);
+  void InstantiateSnowLayer();
+  bool CheckCollisionWithSnow(GameObject* gameobject);
 };
 
 

@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * - OpenGL documentory is used
+ */
 #ifndef CAMERA_H
 #define CAMERA_H
 

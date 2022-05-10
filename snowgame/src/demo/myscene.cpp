@@ -1,18 +1,29 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * 
+ */
 #include <demo/myscene.h>
 #include <common/config.h>
-#include <common/text.h>
 
 #include <iostream>
 
 MyScene::MyScene()
 {
-    init();
-	//Text* text = new Text("fonts/font.tga");
-	//text->message("hello world");
-	//text->position = glm::vec3(WIDTH/2,HEIGHT/2, 0.0f);
-	//std::cout << text->position.x;
-	//text->scale = glm::vec3(.1f);
-	//addGameObject(text);
+	clear();
+
+	{//temporary problem fix, TODO fix that
+	player = new Player("assets/player.tga");
+	addGameObject(player);
+	Snow* snowobj = new Snow("assets/snow.tga");
+	snowobj->position = glm::vec3(0, HEIGHT, 0);
+	addGameObject(snowobj);
+	snow.push_back(snowobj);
+	} 
+
+    isInitialized = init();
+
 }
 MyScene::~MyScene()
 {
@@ -24,14 +35,22 @@ MyScene::~MyScene()
 	{
 		removeGameObject(snow[i]); //deleting each snow piece
 	}
+	for(int i = 0; i < numbers.size(); i++)
+	{
+		removeGameObject(numbers[i]); //deleting each number piece
+	}
 	snow.clear();
 	snowflakes.clear();
+	numbers.clear();
 
 	removeGameObject(player);	//deleting player
 }
 void MyScene::update(float deltaTime)
 {
+	if(isInitialized == true)
+	{
     timeLeftToSpawn -= deltaTime;
+	
 	if(timeLeftToSpawn <= 0)
 	{
 		Snowflake* snowflake = new Snowflake("assets/snowflake.tga");
@@ -47,74 +66,91 @@ void MyScene::update(float deltaTime)
 		//move snowflakes with time
 			if(CheckCollision(snowflakes[i], player))
 			{ //checking collision of snowflake and player
-				Score += 10; 
-				//adding score for collecting snowflake
-				std::cout << Score;
-				removeGameObject(snowflakes[i]);	
-				snowflakes[i]->sprite = nullptr;
-				auto index = find(snowflakes.begin(), snowflakes.end() , snowflakes[i]);
-				snowflakes.erase(index);	
+				 Score += 10; 		
+				 updateScore(Score);
+				 //adding score for collecting snowflake
+				 std::cout << Score;
+				 removeGameObject(snowflakes[i]);	
+				 //deleting the snowflake
+				 snowflakes[i]->sprite = nullptr;
+				 auto index = find(snowflakes.begin(), snowflakes.end() , snowflakes[i]);
+				 snowflakes.erase(index);	
 				//delete snowflake from the local vector (snowlflakes)
-				break;			 	
-				//deleting the snowflake
+				break;			 				
 			}
 			if(CheckCollisionWithSnow(snowflakes[i])) //check snowflake collision with snow
 			// maybe its good idea to check collision only for the first snoflake,
 			// because it is the closest to the snow
 			 {
-			    	std::cout << "collision called\n";	
 				for(int j = 0; j < snowflakes.size();j++)
 			     {
-					removeGameObject(snowflakes[j]);
-					snowflakes[j]->sprite = nullptr;
+					 removeGameObject(snowflakes[j]);
 					//clear all snowflakes
 			     }			
-				 snowflakes.clear();			
-			     InstantiateSnowLayer(); //creating new snow layer	   
-				player->position.y = snow.back()->position.y - player->sprite->height()/2;  
+				  snowflakes.clear();			
+			      InstantiateSnowLayer(); //creating new snow layer	   
+				  player->position.y = snow.back()->position.y - snow[0]->sprite->height();
+				  //set player position on the top of the snow
 			}
 		
     	}
 
+	//player movement
 	if(input->getKey(KeyCode::A))
     {
-        player->position -= glm::vec3(200.0f, 0.0f , 0.0f)*deltaTime;
+        player->position -= glm::vec3(player->Speed, 0.0f , 0.0f)*deltaTime;
     }
      if(input->getKey(KeyCode::D))
     {
-        player->position += glm::vec3(200.0f, 0.0f , 0.0f)*deltaTime;
+        player->position += glm::vec3(player->Speed, 0.0f , 0.0f)*deltaTime;
     }
-	player->update(); // player needs renderer to move
-	//TODO avoid passing renderer to player
+	player->update();
+
 	if(input->getKeyDown(KeyCode::Backspace))
     {
         state = State::Quit; //quit to start scene
     }
+	if(input->getKeyDown(KeyCode::R))
+    {
+       resetGame(); //reset the game
+    }
+	}
+	else
+	{
+		isInitialized = init();
+	}
 }
 void MyScene::InstantiateSnowLayer()
 {
+	//spawning new snow layer when collision happens
 	if(snowlayercount <= maxsnowlayer) 
 	{
-		Snow* snowobj = new Snow("assets/pencils.tga");
-		int n = ceil(WIDTH / snowobj->sprite->width());
-		for(int i = 0 ; i <= n; i++)
+		if(snow.size() != 0)
 		{
-			Snow* snowobj = new Snow("assets/pencils.tga");
-			addGameObject(snowobj);
-			snow.push_back(snowobj);
+			if(snow[0]->sprite->height() != 0)
+		 	{
+				int n = ceil(WIDTH / snow[0]->sprite->width());
+				for(int i = 0 ; i <= n+1; i++)
+				{
+				Snow* snowobj = new Snow("assets/snow.tga");
 			
-			snowobj->position = glm::vec3(
-			i*snowobj->sprite->width(),
-			HEIGHT-snowobj->sprite->height()*snowlayercount,
-			0.0f
-			  );
-			  
+				snow.push_back(snowobj);
+				
+				snowobj->position = glm::vec3
+				(
+				i*snow[0]->sprite->width(),
+				HEIGHT-snow[0]->sprite->height()*snowlayercount,
+				0.0f
+			 	);
+				addGameObject(snowobj);
+				} 
+			}
 		}
+
 		snowlayercount++;
 	}
 	else
 	{
-		std::cout << "game has ended \n";
 		state = State::GameOver;
 	}
 }
@@ -138,18 +174,113 @@ bool MyScene::CheckCollisionWithSnow(GameObject* gameobject)
 	}
 	return false;
 }
-void MyScene::init()
+bool MyScene::init()
 {
-	clearAllGameObjects();
-	snowflakes.clear();
-	snow.clear();
-	//clear all
-	player = new Player("assets/kingkong.tga");
-    addGameObject(player);
+	if(state == State::Reset)
+	{
+		resetGame(); //reset the game
+	}
+	state = State::Active;
+	if(player->sprite->height() != 0) //before rendering the height = 0, TODO fix that
+	{
     _collider = new Collider();
 	snowlayercount = 0;
     InstantiateSnowLayer();
-	player->position.y = snow.back()->position.y - player->sprite->height()/2;  
-    timeLeftToSpawn = timeToSpawnSnowflake;
-	state = State::Active;
+	updateScore(Score);
+	if( snow.size() != 0)	//before rendering the height = 0, TODO fix that
+	{
+		player->position.y = snow[0]->position.y - player->sprite->height(); 
+		//place player on the top of the snow
+		GameObject* house = new GameObject("assets/houseflipped.tga");
+		house->position = glm::vec3(320.0f,HEIGHT-200.0f,0.0f);
+		addGameObjectToTheFront(house);
+		//spawning the house
+	} 
+    timeLeftToSpawn = timeToSpawnSnowflake;	
+	return true;
+	}
+	return false;
+}
+void MyScene::clear()
+{
+	snowflakes.clear();
+	snow.clear();
+	numbers.clear();
+	clearAllGameObjects();	
+	//clear all vectors
+}
+void MyScene::resetGame()
+{
+	clear();
+
+		{//temporary problem fix, TODO fix that
+		player = new Player("assets/player.tga");
+		addGameObject(player);
+		Snow* snowobj = new Snow("assets/snow.tga");
+		snowobj->position = glm::vec3(0, HEIGHT, 0);
+		addGameObject(snowobj);
+		snow.push_back(snowobj);
+		} 
+		
+	isInitialized = false;
+	Score = 0;
+}
+void MyScene::updateScore(int score)
+{
+	GameObject* number;
+	if(numbers.size() !=0)
+	{
+		for (size_t i = 0; i < numbers.size(); i++)
+		{
+			removeGameObject(numbers[i]);
+		}	
+	}
+	numbers.clear(); 
+	//clear all previous numbers
+
+	std::string std = std::to_string(score);
+	for (size_t i = 0; i < std.size(); i++)
+	{
+		switch (std[i])
+		{
+		case '0':
+			number = new GameObject("assets/number_zero.tga");
+			break;
+		case '1':
+			number = new GameObject("assets/number_one.tga");
+			break;
+		case '2':
+			number = new GameObject("assets/number_twoflipped.tga");
+			break;
+		case '3':
+			 number = new GameObject("assets/number_three.tga");
+			break;
+		case '4':
+			number = new GameObject("assets/number_fourflipped.tga");
+			break;
+		case '5':
+			number = new GameObject("assets/number_fiveflipped.tga");
+			break;
+		case '6':
+			number = new GameObject("assets/number_sixflipped.tga");
+			break;
+		case '7':
+			number = new GameObject("assets/number_sevenflipped.tga");
+			break;
+		case '8':
+			number = new GameObject("assets/number_eight.tga");
+			break;	
+		case '9':
+			number = new GameObject("assets/number_nineflipped.tga");
+			break;					
+		default:
+			break;
+		}
+		number->position = glm::vec3(WIDTH/2 + i*60.0f,60.0f, 0.0f);
+		number->scale = glm::vec3(1.0f);
+		addGameObject(number);		
+		numbers.push_back(number);
+		//spawn a number
+	}
+	
 }

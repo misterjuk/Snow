@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * - OpenGL documentory is used
+ */
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -25,7 +31,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-	// Cleanup VBO and shader
+	// Cleanup
 	glDeleteProgram(_programID);
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
@@ -64,7 +70,7 @@ int Renderer::init()
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.6f, 0.9f, 0.9f, 0.0f);
 
 	// Cull triangles which normal is not towards the camera
 	glEnable(GL_CULL_FACE);
@@ -101,10 +107,10 @@ void Renderer::renderScene(Scene* scene)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render all the gameobjects(sprites)
-	for (GameObject* go : scene->gameobjects())
+	for (GameObject* gameobject : scene->gameobjects())
 	{
-		this->renderGameObject(go);
-	
+		this->renderGameObject(gameobject);
+	    //std::cout << scene->gameobjects().size() << std::endl;
 	}
 	// Swap buffers
 	glfwSwapBuffers(this->window());
@@ -118,11 +124,10 @@ void Renderer::renderGameObject(GameObject* gameObject)
 	glm::mat4 projectionMatrix = _camera->getProjectionMatrix();
 
 	//calculating sprite position in the world with relation to an gameobject
-	//gives abillity to set sprite offset 
 	glm::vec3 pos = gameObject->sprite->position + gameObject->position;
 	float rotation = gameObject->sprite->rotation + gameObject->rotation;
 	glm::vec3 scale = gameObject->sprite->scale * gameObject->scale;
-	// Build the Model matrix from Sprite transform
+	// Build the Model matrix from transform
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
 	glm::mat4 rotationMatrix    = glm::eulerAngleYXZ(0.0f, 0.0f, rotation);
 	glm::mat4 scalingMatrix     = glm::scale(glm::mat4(1.0f), glm::vec3(scale.x, scale.y, 1.0f));
@@ -133,22 +138,26 @@ void Renderer::renderGameObject(GameObject* gameObject)
 	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 
 
-
 	// Send our transformation to the currently bound shader, in the "MVP" uniform
 	GLuint matrixID = glGetUniformLocation(_programID, "MVP");
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
 
-	// Bind our texture in Texture Unit 0
+	
+	// Bind our texture in Texture Unit 0S
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gameObject->sprite->texture());
+	Texture* t = resman.getTexture(gameObject->sprite->filename());
+	gameObject->sprite->texture(t); //set texture to a sprite
+	glBindTexture(GL_TEXTURE_2D, t->getGLTexture());
 	// Set our "textureSampler" sampler to use Texture Unit 0
 	GLuint textureID  = glGetUniformLocation(_programID, "textureSampler");
 	glUniform1i(textureID, 0);
 
-	// 1st attribute buffer : vertices
+	Mesh* mesh = resman.getMesh(gameObject->sprite->filename(),t->width(), t->height());
+	gameObject->sprite->mesh(mesh);
+	// 1st attribute buffer : vertices 
 	GLuint vertexPositionID = glGetAttribLocation(_programID, "vertexPosition");
 	glEnableVertexAttribArray(vertexPositionID);
-	glBindBuffer(GL_ARRAY_BUFFER, gameObject->sprite->vertexbuffer());
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexbuffer());
 	glVertexAttribPointer(
 		vertexPositionID, // The attribute we want to configure
 		3,          // size : x,y,z => 3
@@ -161,7 +170,7 @@ void Renderer::renderGameObject(GameObject* gameObject)
 	// 2nd attribute buffer : UVs
 	GLuint vertexUVID = glGetAttribLocation(_programID, "vertexUV");
 	glEnableVertexAttribArray(vertexUVID);
-	glBindBuffer(GL_ARRAY_BUFFER, gameObject->sprite->uvbuffer());
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->uvbuffer());
 	glVertexAttribPointer(
 		vertexUVID, // The attribute we want to configure
 		2,          // size : U,V => 2
@@ -267,92 +276,3 @@ GLuint Renderer::loadShaders(const std::string& vertex_file_path, const std::str
 
 	return programID;
 }
-// void Renderer::_renderSpriteBatch(glm::mat4 modelMatrix, std::vector<Sprite*>& spritebatch, Camera* camera)
-// {
-// 	Sprite* spr = spritebatch[0];
-// 	Shader* shader = _resman.getShader(spr->vertexshader().c_str(), spr->fragmentshader().c_str());
-// 	// ask resourcemanager
-// 	if (shader == nullptr) {
-// 		shader = _defaultShader; // fallback to defaultshader
-// 	}
-// 	std::string texturename = spr->texturename();
-// 	int filter = spr->filter();
-// 	int wrap = spr->wrap();
-// 	Texture* texture = _resman.getTexture(texturename, filter, wrap);
-
-// 	if (spr->size.x == 0) { spr->size.x = texture->width() * spr->uvdim.x; }
-// 	if (spr->size.y == 0) { spr->size.y = texture->height() * spr->uvdim.y; }
-
-// 	Mesh* mesh = _resman.getSpriteMesh(spr->size.x, spr->size.y, spr->pivot.x, spr->pivot.y, spr->uvdim.x, spr->uvdim.y, spr->circlemesh(), spr->which());
-
-// 	if (texture != nullptr) {
-// 		// Bind the texture in Texture Unit 0
-// 		glActiveTexture(GL_TEXTURE0);
-// 		glBindTexture(GL_TEXTURE_2D, texture->getGLTexture());
-// 		//glUniform1i(shader->textureID(), 0);
-
-// 		// for every Sprite in the batch...
-// 		int s = spritebatch.size();
-// 		for (int i = 0; i < s; i++) {
-// 			Sprite* sprite = spritebatch[i]; // a Sprite handle
-// 			int culled = 0; // state that we need to draw it
-// 			if (sprite->useCulling()) { // but maybe we don't
-// 				int half_width = SWIDTH/2;
-// 				int half_height = SHEIGHT/2;
-
-// 				int left_edge = camera->position.x - half_width;
-// 				int right_edge = camera->position.x + half_width;
-// 				int top_edge = camera->position.y - half_height;
-// 				int bottom_edge = camera->position.y + half_height;
-
-// 				float posx = sprite->spriteposition.x;
-// 				float posy = sprite->spriteposition.y;
-
-// 				int debug = 0;
-// 				if (debug) { // cull visibly within the frame
-// 					if (posx - spr->size.x < left_edge) { culled = 1; }
-// 					if (posx + spr->size.x > right_edge) { culled = 1; }
-// 					if (posy + spr->size.y > bottom_edge) { culled = 1; }
-// 					if (posy - spr->size.y < top_edge) { culled = 1; }
-// 				} else {
-// 					if (posx + spr->size.x < left_edge) { culled = 1; }
-// 					if (posx - spr->size.x > right_edge) { culled = 1; }
-// 					if (posy - spr->size.y > bottom_edge) { culled = 1; }
-// 					if (posy + spr->size.y < top_edge) { culled = 1; }
-// 				}
-// 			}
-// 			// this Sprite isn't culled and needs to be drawn
-// 			if (!culled) {
-// 				RGBAColor blendcolor = MAGENTA;
-// 				if (texture->warranty()) {
-// 					blendcolor = sprite->color;
-// 				}
-
-// 				// _uvOffsetID
-// 				glUniform2f(shader->uvOffsetID(), sprite->uvoffset.x, sprite->uvoffset.y);
-
-// 				// _customParamsID
-// 				for (int i=0; i<8; i++) {
-// 					if (shader->customParamsID(i) != -1) {
-// 						glUniform3f(shader->customParamsID(i), sprite->customParams[i].x, sprite->customParams[i].y, sprite->customParams[i].z);
-// 					}
-// 				}
-
-// 				// use sprite transform to build the model matrix.
-// 				glm::vec3 position = glm::vec3(sprite->spriteposition.x, sprite->spriteposition.y, sprite->spriteposition.z);
-// 				glm::vec3 rotation = glm::vec3(sprite->spriterotation.x, sprite->spriterotation.y, sprite->spriterotation.z);
-// 				glm::vec3 scale = glm::vec3(sprite->spritescale.x, sprite->spritescale.y, sprite->spritescale.z);
-
-// 				// Build the model matrix for this sprite.
-// 				glm::mat4 translationMatrix	= glm::translate(modelMatrix, position);
-// 				glm::mat4 rotationMatrix	= glm::eulerAngleYXZ(rotation.y, rotation.x, rotation.z);
-// 				glm::mat4 scalingMatrix		= glm::scale(glm::mat4(1.0f), scale);
-
-// 				glm::mat4 mm = translationMatrix * rotationMatrix * scalingMatrix;
-
-// 				this->_renderMesh(mm, shader, mesh, mesh->numverts(), GL_TRIANGLES, blendcolor);
-// 			}
-// 		}
-// 	}
-
-// }

@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * 
+ */
 #include <demo/mygame.h>
 #include <demo/myscene.h>
 #include <demo/startscene.h>
@@ -19,9 +25,7 @@ MyGame::~MyGame()
 void MyGame::play()
 {   
     do{
-        // input->updateInput(renderer.window());
-        Game::update();
-
+        //DEBUG FEATURE
         if(input->getKeyDown(KeyCode::Z))
         {
             sceneID--;
@@ -48,19 +52,21 @@ void MyGame::play()
                 sceneID = _scenes.size()-1;
                 currentscene = _scenes.back();
                 //hard coded
-                _scenes[1]->init();
+                
                 break;
             case State::StartGame:
                 currentscene->state = State::NotActive;
                 sceneID = 1;
-                currentscene = _scenes[1];
+                currentscene = _scenes[sceneID];
+                _scenes[sceneID]->state = State::Active;         
                 //hard coded         
                 break;
             case State::StartNewGame:
                 currentscene->state = State::NotActive;
                 sceneID = 1;
-                currentscene = _scenes[1];
-                currentscene->state = State::StartNewGame;
+                currentscene = _scenes[sceneID];
+                _scenes[sceneID]->state = State::Reset;
+                _scenes[sceneID]->init();    
                 //hard coded
                 break;
             case State::Quit:
@@ -73,8 +79,10 @@ void MyGame::play()
                 break;
         }
         currentscene->camera()->computeViewMatrixFromInput(renderer.window(), dt);
-        currentscene->update(dt);
         renderer.renderScene(currentscene);
+        Game::update();
+        currentscene->update(dt);
+        
     }while(glfwGetKey(renderer.window(), GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		   glfwWindowShouldClose(renderer.window()) == 0 );
     delete getScene();// TODO delete all scenes

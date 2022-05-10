@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * - OpenGL documentory is used
+ */
 #ifndef RENDERER_H
 #define RENDERER_H
 
@@ -16,8 +22,6 @@ public:
 
 	void renderScene(Scene* scene);
 	void renderGameObject(GameObject* gameObject);
-
-	void _renderSpriteBatch(glm::mat4 modelMatrix, std::vector<Sprite*>& sprites, Camera* camera);
 	
 	GLFWwindow* window() { return _window; };
 
@@ -32,10 +36,12 @@ private:
 		const std::string& vertex_file_path,
 		const std::string& fragment_file_path
 	);
+	ResourceManager resman;
 
 	GLuint _programID;
 
 	Camera* _camera; // reference to scene->camera
+
 };
 
 #endif /* RENDERER_H */

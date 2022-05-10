@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src2",
-    "\\src2\\common",
-    "\\src2\\common\\shaders",
-    "\\src2\\demo",
-    "\\src2\\demo\\assets"
+    "\\src"
   ],
-  "SelectedNode": "\\src2\\common\\snowflake.h",
   "PreviewInSolutionExplorer": false
 }

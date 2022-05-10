@@ -73,15 +73,17 @@ add_library(common # ar rcs libcommon.a
 	common/sprite.cpp
 	common/gameobject.h
 	common/gameobject.cpp
-	common/text.h
-	common/text.cpp
 	common/game.h
 	common/game.cpp
 	common/input.h
 	common/input.cpp
 	common/resourcemanager.h
 	common/resourcemanager.cpp
-)
+	common/texture.h
+	common/texture.cpp
+	common/mesh.h
+	common/mesh.cpp
+	)
 
 # Demo
 add_executable(demo # g++ demo/demo.cpp -o demo

@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ *
+ */
 #include <iostream>
 #include <common/scene.h>
 #include <common/config.h>
@@ -19,9 +25,7 @@ Scene::~Scene()
 	for (size_t i = 0; i < _gameobjects.size(); i++)
 	{
 		delete _gameobjects[i];
-		//_sprites[i] = nullptr;
 	}
-	//_sprites.clear();
 	_gameobjects.clear();
 	// Delete camera
 	delete _camera;
@@ -30,6 +34,10 @@ Scene::~Scene()
 void Scene::addGameObject(GameObject* gameobject)
 {
 	_gameobjects.push_back(gameobject);
+}
+void Scene::addGameObjectToTheFront(GameObject* gameobject)
+{
+	_gameobjects.insert(_gameobjects.begin(),gameobject);
 }
 void Scene::removeGameObject(GameObject* gameobject)
 {
@@ -70,8 +78,8 @@ bool Scene::CheckCollision(GameObject* gameobj1, GameObject* gameobj2)
 			return false;
 		}
 }
-void Scene::init()
+bool Scene::init()
 {
-	
+	return true;
 }
 

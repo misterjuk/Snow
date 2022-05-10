@@ -1,9 +1,16 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ * - OpenGL documentory is used
+ */
 #include <common/config.h>
 #include <common/camera.h>
 
 Camera::Camera()
 {
-	_projectionMatrix = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, 0.1f, 100.0f);
+	_projectionMatrix = glm::ortho(0.0f,(float)WIDTH,(float)HEIGHT, 0.0f, 0.1f, 100.0f);
+	//warning: bottom and top are flipped
 	_viewMatrix = glm::mat4(1.0f);
 	_cursor = glm::vec3( 0, 0, 0 );
 }
@@ -22,27 +29,28 @@ void Camera::computeViewMatrixFromInput(GLFWwindow* window, float deltaTime)
 
 	// Right and Up vector
 	glm::vec3 right = glm::vec3(1, 0, 0);
-	glm::vec3 up = glm::vec3(0, -1, 0); //changed , should be -1
+	glm::vec3 up = glm::vec3(0, -1, 0);
 
 	static glm::vec3 position = glm::vec3( 0, 0, 10 ); // Initial position : on +Z
 	float speed = 300.0f; // units / second
 
-	// Move up
-	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
-		position += up * deltaTime * speed;
-	}
+	//DEBUG FEATURE
+	// // Move up
+	// if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
+	// 	position += up * deltaTime * speed;
+	// }
 	// Move down
-	if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS){
-		position -= up * deltaTime * speed;
-	}
-	// Strafe right
-	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		position += right * deltaTime * speed;
-	}
-	// Strafe left
-	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
-		position -= right * deltaTime * speed;
-	}
+	// if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS){
+	// 	position -= up * deltaTime * speed;
+	// }
+	// // Strafe right
+	// if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
+	// 	position += right * deltaTime * speed;
+	// }
+	// // Strafe left
+	// if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
+	// 	position -= right * deltaTime * speed;
+	// }
 
 	// View matrix
 	_viewMatrix = glm::lookAt(

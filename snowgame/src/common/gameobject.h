@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ *
+ */
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
@@ -11,18 +17,12 @@ public:
    GameObject(const std::string& spritepath);
    GameObject();
    virtual ~GameObject(); 
-   // glm::vec3 position() {return _position;};
-   // glm::vec3 scale() {return _scale;};
-   // float rotation() {return _rotation;};
-   // Sprite* sprite() {return _sprite;};
-   //std::vector<Sprite*> _spritebatch;
+
    glm::vec3 position;
    float rotation;
    glm::vec3 scale;
    Sprite* sprite;
-protected:
-   
-   
+protected:  
 };
 
 #endif /* GAMEOBJECT_H */

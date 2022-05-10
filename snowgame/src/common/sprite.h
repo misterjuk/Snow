@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ *
+ */
 #ifndef SPRITE_H
 #define SPRITE_H
 
@@ -12,38 +18,31 @@ public:
 	Sprite(const std::string& imagepath);
 	virtual ~Sprite();
 
-	GLuint texture() { return _texture; };
-	GLuint vertexbuffer() { return _vertexbuffer; };
-	GLuint uvbuffer() { return _uvbuffer; };
+	Texture* texture() { return _texture; };
+	Mesh* mesh() { return _mesh;};
+	void texture(Texture* texture) {_texture = texture;}
+	void mesh(Mesh* mesh) {_mesh = mesh;}
 
-	unsigned int width() { return _width; };
-	unsigned int height() { return _height; };
+	std::string filename() {return _filename;};
 
-	void setupSprite(const std::string& filename, float pivotx, float pivoty, float uvwidth, float uvheight);
-	int frame(int f);
+	unsigned int width() { return _texture->width(); };
+	unsigned int height() { return _texture->height(); };
+	//void width(int width) { _width = width; };
+	//void height(int height) { _height = height; };
 
 	glm::vec3 position;
 	float rotation;
 	glm::vec3 scale;
 
 private:
-	GLuint loadTGA(const std::string& imagepath);
+	
+	Texture* _texture;
+	Mesh* _mesh;
 
-	GLuint _texture;
-	GLuint _vertexbuffer;
-	GLuint _uvbuffer;
+	std::string _filename;
 
-	unsigned int _width;
-	unsigned int _height;
-
-	float _pivotx;
-	float _pivoty;
-	int _frame;
-	float uvdimx = 1.0f;
-	float uvdimy = 1.0f;
-
-	float uvoffsetx;
-	float uvoffsety;
+	//unsigned int _width;
+	//unsigned int _height;
 
 };
 

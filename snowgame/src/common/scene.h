@@ -1,3 +1,9 @@
+/**
+ * This file is part of the SNOW, intake assigment for Breda University of Applied Sciences
+ *
+ * - Copyright 2022 Yevhenii Ovramenko <misterjuk2005@gmail.com>
+ *
+ */
 #ifndef SCENE_H
 #define SCENE_H
 
@@ -8,6 +14,8 @@
 #include <common/gameobject.h>
 #include <common/input.h>
 
+#include <iostream>
+
 enum class State
 {
 	Quit, //quit from game to start scene
@@ -17,19 +25,23 @@ enum class State
 	StartGame,
 	StartNewGame,
 	Active,
-	NotActive
+	NotActive,
+	Reset
 };
 class Scene
 {
 public:
-
 	Scene();
 	virtual ~Scene();
 	virtual void update(float deltaTime);
 
-	virtual void init();
+	virtual bool init();
 
 	void addGameObject(GameObject* gameobject);
+
+	//give abillity to render some obejcts first
+	void addGameObjectToTheFront(GameObject* gameobject);
+
 	void removeGameObject(GameObject* gameobject);
 	void clearAllGameObjects();
 
@@ -42,15 +54,14 @@ public:
 	}
 	bool CheckCollision(GameObject* gameobj1, GameObject* gameobj2);
 
-	
 	State state;
+
 protected:
 	Input* input;
 private:
 	std::vector<GameObject*> _gameobjects;
 	Camera* _camera;
 	Collider* _collider;
-	
 };
 
 #endif /* SCENE_H */
